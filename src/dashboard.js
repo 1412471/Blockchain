@@ -2,7 +2,6 @@ import React from 'react';
 import './dashboard.css';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-
 class Dashboard extends React.Component{
     constructor(){
         super();
@@ -11,14 +10,13 @@ class Dashboard extends React.Component{
             money:0,
             exchange:[
                 {
-                    IDNhan:'',
+                    IDnhan:'',
                     IDGui:'',
                     now:''
                 }
             ]
         }
     }
-
     componentWillMount(){
         var self=this;
         axios.get('https://mystoganwebapi.herokuapp.com/api/admin')
@@ -34,18 +32,18 @@ class Dashboard extends React.Component{
             {
                 if(this.props.location.state.IDvi && this.props.location.state.IDvi===this.state.List[i]._id)
                 {
+
                     this.setState({exchange:this.state.List[i].HistoryEx,money:this.state.List[i].money});
                 }
             }
         },2000);
-    }
 
+    }
     mySignOut(){
         this.props.history.push({
             pathname:'/signin',
         });//chuyển qua trang khác
     }
-
     myClickExchange(){
         this.props.history.push({
             pathname:'/exchange',
@@ -54,7 +52,6 @@ class Dashboard extends React.Component{
             }
         });
     }
-
     myClickDashboard(){
         this.props.history.push({
             pathname:'/dashboard',
@@ -63,36 +60,36 @@ class Dashboard extends React.Component{
             }
         });
     }
-
-    render(){ 
-
+    render(){
         let length=this.state.exchange.length;
         let start;
-
-        if(length >= 4) {
-            start = length-3;
-        } else {
-            start = 0;
+        if(length>=4)
+        {
+            start=length-3;
+        }
+        else{
+            start=0;
         }
 
         const moves = this.state.exchange.map((step, move) => {
 
-            if(move >= start)
+            if(move>=start)
             {
                 return (
-                    <div key = {move}>
-                        <div key = {move}>
+                    <div key={move}>
+                        <div key={move}>
                             <div className="col-sm-4 col-xs-12">
                                 {step.IDGui}
                             </div>
                             <div className="col-sm-4 col-xs-12">
-                                {step.IDNhan}
+                                {step.IDnhan}
                             </div>
                             <div className="col-sm-4 col-xs-12">
                                 {step.now}
                             </div>
                         </div>
                     </div>
+
                 );
             }
             else{
@@ -102,11 +99,9 @@ class Dashboard extends React.Component{
             }
 
         });
-
         setTimeout(()=>{
             ReactDOM.render(moves,document.getElementById('test'));
         },1000);
-        
             return(
                 <div id="dashboard">
                     <div className="header">BLOCKCHAIN</div>
