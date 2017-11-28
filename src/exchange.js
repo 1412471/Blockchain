@@ -2,10 +2,8 @@ import React from 'react';
 import './exchange.css';
 import axios from 'axios';
 import ReactDOM from 'react-dom';
-
 class Exchange extends React.Component{
     constructor(){
-
         super();
         this.state={
             wallet:'',
@@ -13,44 +11,39 @@ class Exchange extends React.Component{
             List:[],
             historyEx: [
                 {
-                    IDNhan:'',
+                    IDnhan:'',
                     IDGui:'',
                     now:''
                 }
             ],
         }
-
         this.updateWallet = this.updateWallet.bind(this);
         this.updateMoney = this.updateMoney.bind(this);
     };
-
     updateWallet(e) {
         this.setState({wallet: e.target.value});
     }
-
     updateMoney(e) {
         this.setState({money: e.target.value});
     }
 
     btnSend() {
-
         const history=this.state.historyEx.slice();
-        const IDGui=this.props.location.state.IDvi;
-        const IDNhan=this.state.wallet;
+        const IDgui=this.props.location.state.IDvi;
+        const IDnhan=this.state.wallet;
 
         this.setState({
             historyEx: history.concat([
                 {
-                    IDGui:IDGui,
-                    IDNhan:IDNhan,
+                    IDGui:IDgui,
+                    IDnhan:IDnhan,
                     now:new Date()
                 }
             ]),
-        });
 
+        });
         let moneysend = 0;
         let moneyreceive = 0;
-
         for (let i = 0; i < this.state.List.length; i++) {
             if (this.state.List[i]._id === this.props.location.state.IDvi) {
                 moneysend = this.state.List[i].money - Number.parseInt(this.state.money, 10);
@@ -59,7 +52,6 @@ class Exchange extends React.Component{
                 moneyreceive = this.state.List[i].money + Number.parseInt(this.state.money, 10);
             }
         }
-
         setTimeout(()=>{
             axios.put('https://mystoganwebapi.herokuapp.com/api/admin' + this.props.location.state.IDvi, {newmoney: moneysend,HistoryExchange:this.state.historyEx})
                 .then(function (res) {
@@ -67,7 +59,6 @@ class Exchange extends React.Component{
                 }).catch(function (err) {
                 console.log(err);
             });
-
             axios.put('https://mystoganwebapi.herokuapp.com/api/admin' + this.state.wallet, {newmoney: moneyreceive,HistoryExchange:this.state.historyEx})
                 .then(function (res) {
                     console.log(res);
@@ -75,6 +66,7 @@ class Exchange extends React.Component{
                 console.log(err);
             });
         },2000);
+
     }
 
     myClickExchange(){
@@ -85,7 +77,6 @@ class Exchange extends React.Component{
             }
         });
     }
-
     myClickDashboard(){
         this.props.history.push({
             pathname:'/dashboard',
@@ -94,13 +85,11 @@ class Exchange extends React.Component{
             }
         });
     }
-
     mySignOut2(){
         this.props.history.push({
             pathname:'/signin',
         });//chuyển qua trang khác
     }
-
     ShowEx(){
         const moves = this.state.historyEx.map((step, move) => {
             return (
@@ -109,7 +98,7 @@ class Exchange extends React.Component{
                         {step.IDGui}
                     </div>
                     <div className="col-sm-4 col-xs-12">
-                        {step.IDNhan}
+                        {step.IDnhan}
                     </div>
                     <div className="col-sm-4 col-xs-12">
                         {step.now}
@@ -118,15 +107,15 @@ class Exchange extends React.Component{
 
             );
         });
-
         setTimeout(()=>{
             ReactDOM.render(moves,document.getElementById('test2'));
-        },1000);
-    }
+            },1000);
 
+
+    }
     componentWillMount(){
         var self=this;
-        axios.get('https://webapi1412139.herokuapp.com/api/admin')
+        axios.get('https://mystoganwebapi.herokuapp.com/api/admin')
             .then(function (res) {
                 self.setState({List:res.data});
             }).catch(function (err) {
@@ -145,8 +134,8 @@ class Exchange extends React.Component{
                 }
             }
         },2000);
-    }
 
+    }
     render(){
         return(
             <div id="exchange">
@@ -171,9 +160,9 @@ class Exchange extends React.Component{
                                 <button type="button" className="btn btn-primary" onClick={()=>this.ShowEx()}>Tất cả giao dịch</button>
                             </div>
                             <div className="col-sm-12 col-md-12 content" >
-                            	<div className="col-sm-4 col-xs-12">
+                               <div className="col-sm-4 col-xs-12">
                                    ID Gửi
-                               	</div>
+                               </div>
                                 <div className="col-sm-4 col-xs-12">
                                     ID Nhận
                                 </div>
@@ -191,31 +180,31 @@ class Exchange extends React.Component{
                                             <button type="button" className="close" data-dismiss="modal">&times;</button>
                                             <h4 className="modal-title">Gửi</h4>
                                         </div>
-
                                         <div className="modal-body">
                                             <div className="form-group">
-                                                <label htmlFor="Inputwallet">ID</label>
+                                                <label htmlFor="Inputwallet">ID Ví</label>
                                                 <input type="text" className="form-control" id="Inputwallet" value = {this.state.wallet}
                                                        onChange = {this.updateWallet} />
-                                            </div>
 
+                                            </div>
                                             <div className="form-group">
                                                 <label htmlFor="Inputmoney">Số tiền</label>
                                                 <input type="text" className="form-control" id="Inputmoney" value = {this.state.money}
                                                        onChange = {this.updateMoney}/>
                                             </div>
-
                                             <div className="form-group">
                                                 <input type="submit" className="btn btn-lg btn-info btn-block" value="GỬI" onClick={()=>this.btnSend()}/>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
         );
+
     }
 }
 export default Exchange
